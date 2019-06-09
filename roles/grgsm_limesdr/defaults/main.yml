@@ -1,0 +1,7 @@
+---
+# defaults file for gnu_limesdr
+
+
+package_name: grgsm
+git_dir: "/tmp/git/{{ package_name }}"
+build_dir: "{{ git_dir }}/build"

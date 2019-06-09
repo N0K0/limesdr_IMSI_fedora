@@ -1,0 +1,41 @@
+---
+# tasks file for limesdrsuite
+
+
+- name: Pull down the LimeSuite src 
+  git:
+    dest: "{{ git_dir }}"
+    repo: https://github.com/myriadrf/LimeSuite.git
+
+- name: Ensure we got what we need to complie
+  dnf:
+    name: 
+      - git
+      - cmake
+      - libsqlite3x-devel
+      - gcc-c++
+      - libusb-devel
+      - libi2c-devel
+      - SoapySDR-devel
+      - freeglut-devel
+  become: true
+
+- name: create build dir
+  file:
+    state=directory
+    path={{ build_dir }}
+
+- name: Make the system
+  command: "{{ item }} chdir={{ build_dir }}"
+  with_items:
+    - "cmake {{ git_dir }}" 
+    - "make -j {{ ansible_processor_vcpus }}"
+
+- name: Install the system
+  command: "{{ item }} chdir={{ build_dir }}"
+  with_items:
+    - make install
+  become: true
+
+- name: Fix udev rules
+  include: udev.yml

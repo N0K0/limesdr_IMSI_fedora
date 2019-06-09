@@ -1,0 +1,20 @@
+---
+
+- name: Need this packages for se linux systems
+  dnf:
+      name: libselinux-python # required. A list of package names, or package specifier with version, like C(name-1.0) When using state=latest, this can be '*' which means run: dnf -y update. You can also pass a url or a local path to a rpm file.
+  become: true
+  
+- name: Setting up udev rules
+  copy: 
+    src: 64-limesuite.rules
+    dest: /etc/udev/rules.d/64-limesuite.rules
+  become: true
+
+- name: Reload udev
+  command: udevadm control --reload-rules
+  become: true
+
+- name: Retrigger udev
+  command: udevadm trigger
+  become: true

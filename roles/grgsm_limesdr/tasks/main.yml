@@ -1,0 +1,48 @@
+---
+# tasks file for gnu_limesdr
+
+# 
+
+- name: Pull down the LimeSuite src 
+  git:
+    dest: "{{ git_dir }}"
+    repo: https://gitlab.com/myriadrf/gr-gsm.git
+
+- name: Ensure we got what we need to compile
+  dnf:
+    name: 
+      - git
+      - cmake
+      - libsqlite3x-devel
+      - gcc-c++
+      - libtool
+      - boost-devel
+      - swig
+      - libosmocore-devel
+      - cppunit-devel
+      - gnuradio-devel
+      - gr-osmosdr
+      - octave
+      - fltk-devel
+      - SoapySDR-devel
+      - wxGTK3-devel
+      - mingw64-wxWidgets3
+  become: true
+
+
+- name: create build dir
+  file:
+    state=directory
+    path={{ build_dir }}
+
+- name: Make the system
+  command: "{{ item }} chdir={{ build_dir }}"
+  with_items:
+    - "cmake {{ git_dir }}" 
+    - "make -j {{ ansible_processor_vcpus }}"
+
+- name: Install the system
+  command: "{{ item }} chdir={{ build_dir }}"
+  with_items:
+    - make install
+  become: true

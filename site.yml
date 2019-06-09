@@ -1,0 +1,11 @@
+---
+# Install the full suite to run a imsicatcher on fedora 30
+
+
+- name: apply and run all roles
+  hosts: all
+  roles:
+    - common
+    - grgsm_limesdr
+    - limesdrsuite
+    - gr_limesdr

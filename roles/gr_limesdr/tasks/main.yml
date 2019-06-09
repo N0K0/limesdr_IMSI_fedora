@@ -1,0 +1,35 @@
+---
+# tasks file for gr_limesdr
+
+
+- name: Pull down the gr-limesdr src 
+  git:
+    dest: "{{ git_dir }}"
+    repo: https://github.com/myriadrf/gr-limesdr
+
+- name: Ensure we got what we need to compile
+  dnf:
+    name: 
+      - git
+      - cmake
+      - boost-devel
+      - swig
+  become: true
+
+
+- name: create build dir
+  file:
+    state=directory
+    path={{ build_dir }}
+
+- name: Make the system
+  command: "{{ item }} chdir={{ build_dir }}"
+  with_items:
+    - "cmake {{ git_dir }}" 
+    - "make -j {{ ansible_processor_vcpus }}"
+
+- name: Install the system
+  command: "{{ item }} chdir={{ build_dir }}"
+  with_items:
+    - make install
+  become: true

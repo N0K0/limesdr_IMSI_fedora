@@ -1,0 +1,9 @@
+---
+# tasks file for grgsm_limesdr_livemon
+
+
+- name: Copy over the alternative grc files
+  copy:
+    dest: /usr/bin/grgsm_livemon_limesdr 
+    src: grgsm_livemon_limesdr 
+    mode: u=x,g=x,o=x
